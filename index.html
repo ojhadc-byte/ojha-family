@@ -1,1 +1,543 @@
 
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#173b32">
+  <title>ओझा परिवार – हाम्रो वंश, हाम्रो पहिचान</title>
+  <style>
+    :root {
+      --green: #173b32;
+      --green2: #245b49;
+      --gold: #d7ad55;
+      --paper: #f7f5ef;
+      --ink: #25332d;
+      --muted: #68756e;
+      --line: #e3e7e1;
+      --white: #fff;
+      --red: #a52d2d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans Devanagari", "Mangal", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.65;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hero {
+      color: white;
+      text-align: center;
+      padding: 34px 16px 28px;
+      background: linear-gradient(135deg, #12352d, #28614d);
+      border-bottom: 5px solid var(--gold);
+    }
+    .hero .symbol { font-size: 36px; }
+    .hero h1 { margin: 5px 0; font-size: clamp(25px, 5vw, 38px); }
+    .hero p { margin: 5px 0; color: #e8eee9; }
+    .identity {
+      max-width: 900px;
+      margin: 18px auto 0;
+      padding: 12px;
+      border: 1px solid #ffffff45;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #f4ead0;
+    }
+    .container { max-width: 1100px; margin: auto; padding: 20px 14px 50px; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 9px;
+      align-items: center; margin-bottom: 16px;
+    }
+    .toolbar input { flex: 1; min-width: 220px; }
+    input, select, textarea {
+      width: 100%; padding: 11px 12px;
+      border: 1px solid #ccd5ce; border-radius: 8px;
+      background: white; color: var(--ink);
+    }
+    textarea { min-height: 75px; resize: vertical; }
+    .toolbar input { width: auto; }
+    .btn {
+      border: 0; border-radius: 8px; padding: 10px 15px;
+      background: var(--green); color: white;
+    }
+    .btn:hover { background: var(--green2); }
+    .btn.gold { background: #a77b2d; }
+    .btn.light { background: #e9eee9; color: var(--green); }
+    .btn.danger { background: var(--red); }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+    .status {
+      margin: 10px 0; padding: 10px 13px;
+      border-radius: 8px; background: #e8efe9; color: var(--green);
+      display: none;
+    }
+    .status.error { display: block; background: #f9e8e8; color: #8e2222; }
+    .status.show { display: block; }
+    .section-title {
+      color: var(--green); border-bottom: 2px solid var(--gold);
+      padding-bottom: 7px; margin: 24px 0 13px;
+    }
+    .stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin: 14px 0 20px;
+    }
+    .stat {
+      text-align: center; padding: 13px 8px; background: white;
+      border: 1px solid var(--line); border-radius: 10px;
+    }
+    .stat strong { display: block; color: var(--green); font-size: 23px; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    .member-list {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .member {
+      background: white; border: 1px solid var(--line);
+      border-left: 4px solid var(--gold); border-radius: 10px;
+      padding: 14px; box-shadow: 0 2px 7px #102b1c0b;
+    }
+    .member h3 { margin: 0 0 5px; color: var(--green); font-size: 18px; }
+    .member p { margin: 3px 0; font-size: 14px; color: var(--muted); }
+    .member .actions { display: flex; gap: 7px; margin-top: 10px; }
+    .member .actions button { padding: 6px 10px; font-size: 13px; }
+    .generation-heading {
+      margin: 22px 0 10px; color: var(--green);
+      font-size: 18px; padding-left: 9px;
+      border-left: 4px solid var(--gold);
+    }
+    .panel {
+      background: white; padding: 17px; border-radius: 12px;
+      border: 1px solid var(--line); margin: 18px 0;
+    }
+    .panel h2 { color: var(--green); margin-top: 0; font-size: 20px; }
+    .form-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .field label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
+    .field.full { grid-column: 1 / -1; }
+    .form-actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 14px; }
+    .hidden { display: none !important; }
+    .login-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .login-info { color: var(--muted); font-size: 13px; }
+    .empty {
+      background: white; border: 1px dashed #cbd5ce; border-radius: 10px;
+      padding: 25px; text-align: center; color: var(--muted);
+    }
+    footer {
+      background: var(--green); color: #e8eee9; text-align: center;
+      padding: 20px 12px; font-size: 13px;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 14px 10px 35px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .stats { gap: 6px; }
+      .stat strong { font-size: 19px; }
+      .toolbar .btn { flex: 1; }
+    }
+    @media print {
+      body { background: white; }
+      .hero { background: white !important; color: black; border-bottom: 2px solid #777; }
+      .hero p, .identity { color: #333; }
+      .toolbar, #adminPanel, #loginPanel, .actions, footer .no-print { display: none !important; }
+      .container { max-width: none; padding: 5px; }
+      .member { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="symbol">ॐ</div>
+    <h1>ओझा परिवार</h1>
+    <p>हाम्रो वंश, हाम्रो पहिचान</p>
+    <div class="identity">
+      <strong>गोत्र:</strong> आत्रेय &nbsp; | &nbsp;
+      <strong>वंश:</strong> गौड ब्राह्मण<br>
+      <strong>मूलस्थान:</strong> गुजरात &nbsp; | &nbsp;
+      <strong>मूलथलो:</strong> गाँजरी, मेलौली, बैतडी<br>
+      <strong>वेद:</strong> शुक्ल यजुर्वेद &nbsp; | &nbsp;
+      <strong>कुलदेवता:</strong> शिव महारुद्र &nbsp; | &nbsp;
+      <strong>कुलदेवी:</strong> दुर्गाभवानी
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="status" class="status"></div>
+
+    <section class="panel" id="loginPanel">
+      <div class="login-row">
+        <button class="btn" id="loginBtn">Google बाट व्यवस्थापक लगइन</button>
+        <button class="btn light hidden" id="logoutBtn">लगआउट</button>
+        <span class="login-info" id="loginInfo">वंशावली सबैले हेर्न सक्छन्। सम्पादन व्यवस्थापकले मात्र गर्न सक्छन्।</span>
+      </div>
+    </section>
+
+    <section id="adminPanel" class="panel hidden">
+      <h2 id="formTitle">परिवारको सदस्य थप्नुहोस्</h2>
+      <form id="memberForm">
+        <input type="hidden" id="memberId">
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">सदस्यको पूरा नाम *</label>
+            <input id="name" required maxlength="120" placeholder="जस्तै: मोतिराज ओझा">
+          </div>
+          <div class="field">
+            <label for="fatherId">बुबाको नाम</label>
+            <select id="fatherId">
+              <option value="">मूल पुर्खा / बुबाको विवरण छैन</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="generation">पुस्ता नम्बर *</label>
+            <input id="generation" type="number" min="1" max="100" required placeholder="जस्तै: १">
+          </div>
+          <div class="field">
+            <label for="branch">शाखा / थर / चिनारी</label>
+            <input id="branch" maxlength="120" placeholder="जस्तै: गोठ्याल्या">
+          </div>
+          <div class="field full">
+            <label for="note">थप विवरण (बसोबास, टिप्पणी आदि)</label>
+            <textarea id="note" maxlength="1000" placeholder="थप जानकारी लेख्नुहोस्"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn gold" type="submit" id="saveBtn">सदस्य सुरक्षित गर्नुहोस्</button>
+          <button class="btn light" type="button" id="cancelEditBtn">रद्द गर्नुहोस्</button>
+        </div>
+      </form>
+    </section>
+
+    <div class="stats">
+      <div class="stat"><strong id="totalMembers">०</strong><span>जम्मा सदस्य</span></div>
+      <div class="stat"><strong id="totalGenerations">०</strong><span>पुस्ता</span></div>
+      <div class="stat"><strong id="totalBranches">०</strong><span>शाखा / चिनारी</span></div>
+    </div>
+
+    <h2 class="section-title">वंशावली विवरण</h2>
+    <div class="toolbar">
+      <input id="searchInput" type="search" placeholder="सदस्यको नाम वा शाखा खोज्नुहोस्...">
+      <button class="btn light" id="printBtn">प्रिन्ट / PDF</button>
+      <button class="btn light hidden" id="backupBtn">ब्याकअप डाउनलोड</button>
+    </div>
+    <div id="familyTree">
+      <div class="empty">वंशावली लोड हुँदैछ...</div>
+    </div>
+  </main>
+
+  <footer>
+    <div>ओझा परिवार – हाम्रो वंश, हाम्रो पहिचान</div>
+    <div>पुर्खाको सम्मान, सन्ततिको एकता</div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase Web App configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB52g2WChelJpIAyl1lpZogQ4h6jPelSik",
+      authDomain: "ojha-family.firebaseapp.com",
+      projectId: "ojha-family",
+      storageBucket: "ojha-family.firebasestorage.app",
+      messagingSenderId: "326434749515",
+      appId: "1:326434749515:web:b410bc7e74750934e8e1ce",
+      measurementId: "G-1ZJMGFLJQL"
+    };
+
+    const ADMIN_EMAIL = "ojhadc@gmail.com";
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const membersRef = db.collection("members");
+
+    let currentUser = null;
+    let isAdmin = false;
+    let members = [];
+
+    const $ = (id) => document.getElementById(id);
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+      })[ch]);
+    }
+
+    function nepaliNumber(value) {
+      return String(value).replace(/\d/g, d => "०१२३४५६७८९"[Number(d)]);
+    }
+
+    function showStatus(message, isError = false) {
+      const box = $("status");
+      box.textContent = message;
+      box.className = "status show" + (isError ? " error" : "");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(() => box.classList.remove("show"), 6000);
+    }
+
+    function getMember(id) {
+      return members.find(m => m.id === id);
+    }
+
+    function fatherName(member) {
+      if (!member.fatherId) return "मूल पुर्खा / उल्लेख नभएको";
+      const father = getMember(member.fatherId);
+      return father ? father.name : "बुबाको विवरण भेटिएन";
+    }
+
+    function updateStats() {
+      $("totalMembers").textContent = nepaliNumber(members.length);
+      const generations = [...new Set(members.map(m => Number(m.generation)).filter(n => n > 0))];
+      $("totalGenerations").textContent = nepaliNumber(generations.length);
+      const branches = [...new Set(members.map(m => (m.branch || "").trim()).filter(Boolean))];
+      $("totalBranches").textContent = nepaliNumber(branches.length);
+    }
+
+    function updateFatherOptions(selectedId = "") {
+      const select = $("fatherId");
+      const sorted = [...members].sort((a, b) =>
+        Number(a.generation || 0) - Number(b.generation || 0) ||
+        a.name.localeCompare(b.name, "ne")
+      );
+      select.innerHTML = '<option value="">मूल पुर्खा / बुबाको विवरण छैन</option>';
+      sorted.forEach(m => {
+        const option = document.createElement("option");
+        option.value = m.id;
+        option.textContent = `${m.name} (पुस्ता ${nepaliNumber(m.generation || "?")})`;
+        if (m.id === selectedId) option.selected = true;
+        select.appendChild(option);
+      });
+    }
+
+    function renderMembers() {
+      updateStats();
+      updateFatherOptions($("fatherId").value);
+
+      const query = $("searchInput").value.trim().toLocaleLowerCase();
+      let filtered = members.filter(m => {
+        const text = [m.name, m.branch, m.note, fatherName(m)].join(" ").toLocaleLowerCase();
+        return text.includes(query);
+      });
+
+      filtered.sort((a, b) =>
+        Number(a.generation || 0) - Number(b.generation || 0) ||
+        a.name.localeCompare(b.name, "ne")
+      );
+
+      const tree = $("familyTree");
+      if (!filtered.length) {
+        tree.innerHTML = '<div class="empty">' +
+          (members.length ? "खोजिएको सदस्य भेटिएन।" : "अहिलेसम्म सदस्य थपिएको छैन। व्यवस्थापकले लगइन गरी सदस्य थप्न सक्नुहुन्छ।") +
+          '</div>';
+        return;
+      }
+
+      const groups = new Map();
+      filtered.forEach(m => {
+        const gen = Number(m.generation || 0);
+        if (!groups.has(gen)) groups.set(gen, []);
+        groups.get(gen).push(m);
+      });
+
+      tree.innerHTML = [...groups.entries()].map(([gen, list]) => `
+        <h3 class="generation-heading">${gen ? nepaliNumber(gen) + " औँ पुस्ता" : "पुस्ता उल्लेख नभएका सदस्य"}</h3>
+        <div class="member-list">
+          ${list.map(m => `
+            <article class="member">
+              <h3>${escapeHtml(m.name)}</h3>
+              <p><strong>बुबा:</strong> ${escapeHtml(fatherName(m))}</p>
+              <p><strong>शाखा / चिनारी:</strong> ${escapeHtml(m.branch || "उल्लेख छैन")}</p>
+              ${m.note ? `<p><strong>थप विवरण:</strong> ${escapeHtml(m.note)}</p>` : ""}
+              ${isAdmin ? `
+                <div class="actions">
+                  <button class="btn light editBtn" data-id="${escapeHtml(m.id)}">सच्याउनुहोस्</button>
+                  <button class="btn danger deleteBtn" data-id="${escapeHtml(m.id)}">हटाउनुहोस्</button>
+                </div>` : ""}
+            </article>
+          `).join("")}
+        </div>
+      `).join("");
+
+      tree.querySelectorAll(".editBtn").forEach(btn =>
+        btn.addEventListener("click", () => editMember(btn.dataset.id))
+      );
+      tree.querySelectorAll(".deleteBtn").forEach(btn =>
+        btn.addEventListener("click", () => deleteMember(btn.dataset.id))
+      );
+    }
+
+    function resetForm() {
+      $("memberForm").reset();
+      $("memberId").value = "";
+      $("formTitle").textContent = "परिवारको सदस्य थप्नुहोस्";
+      $("saveBtn").textContent = "सदस्य सुरक्षित गर्नुहोस्";
+      updateFatherOptions();
+    }
+
+    function editMember(id) {
+      if (!isAdmin) return;
+      const m = getMember(id);
+      if (!m) return;
+      $("memberId").value = m.id;
+      $("name").value = m.name || "";
+      $("generation").value = m.generation || "";
+      $("branch").value = m.branch || "";
+      $("note").value = m.note || "";
+      updateFatherOptions(m.fatherId || "");
+      $("formTitle").textContent = "सदस्यको विवरण सच्याउनुहोस्";
+      $("saveBtn").textContent = "परिवर्तन सुरक्षित गर्नुहोस्";
+      $("adminPanel").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function hasDescendant(id) {
+      return members.some(m => m.fatherId === id);
+    }
+
+    async function deleteMember(id) {
+      if (!isAdmin) return;
+      const m = getMember(id);
+      if (!m) return;
+
+      if (hasDescendant(id)) {
+        showStatus("यो सदस्यका सन्तानको विवरण जोडिएको छ। पहिले सन्तानको सम्बन्ध सच्याउनुहोस् वा हटाउनुहोस्।", true);
+        return;
+      }
+      if (!confirm(`“${m.name}” को विवरण हटाउने निश्चित हो?`)) return;
+
+      try {
+        await membersRef.doc(id).delete();
+        showStatus("सदस्यको विवरण हटाइयो।");
+      } catch (error) {
+        console.error(error);
+        showStatus("हटाउन सकिएन: " + error.message, true);
+      }
+    }
+
+    $("memberForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!isAdmin) {
+        showStatus("यो काम व्यवस्थापकले मात्र गर्न सक्छन्।", true);
+        return;
+      }
+
+      const id = $("memberId").value;
+      const name = $("name").value.trim();
+      const fatherId = $("fatherId").value;
+      const generation = Number($("generation").value);
+      const branch = $("branch").value.trim();
+      const note = $("note").value.trim();
+
+      if (!name || !generation || generation < 1) {
+        showStatus("नाम र सही पुस्ता नम्बर भर्नुहोस्।", true);
+        return;
+      }
+      if (id && fatherId === id) {
+        showStatus("कुनै सदस्य आफ्नै बुबा हुन सक्दैन।", true);
+        return;
+      }
+      if (id && fatherId && isDescendantOf(fatherId, id)) {
+        showStatus("वंशावलीमा चक्रीय सम्बन्ध बनाउन मिल्दैन। बुबाको नाम जाँच्नुहोस्।", true);
+        return;
+      }
+
+      const data = {
+        name, fatherId, generation, branch, note,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      $("saveBtn").disabled = true;
+      try {
+        if (id) {
+          await membersRef.doc(id).update(data);
+          showStatus("सदस्यको विवरण सफलतापूर्वक सच्याइयो।");
+        } else {
+          data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          await membersRef.add(data);
+          showStatus("नयाँ सदस्य सफलतापूर्वक थपियो।");
+        }
+        resetForm();
+      } catch (error) {
+        console.error(error);
+        showStatus("सुरक्षित गर्न सकिएन: " + error.message, true);
+      } finally {
+        $("saveBtn").disabled = false;
+      }
+    });
+
+    function isDescendantOf(candidateId, ancestorId) {
+      let current = getMember(candidateId);
+      const seen = new Set();
+      while (current && current.fatherId) {
+        if (current.fatherId === ancestorId) return true;
+        if (seen.has(current.id)) return true;
+        seen.add(current.id);
+        current = getMember(current.fatherId);
+      }
+      return false;
+    }
+
+    $("cancelEditBtn").addEventListener("click", resetForm);
+    $("searchInput").addEventListener("input", renderMembers);
+    $("printBtn").addEventListener("click", () => window.print());
+
+    $("backupBtn").addEventListener("click", () => {
+      if (!isAdmin) return;
+      const data = members.map(({ id, ...rest }) => ({ id, ...rest }));
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ojha-family-backup.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    $("loginBtn").addEventListener("click", async () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      try {
+        await auth.signInWithPopup(provider);
+      } catch (error) {
+        console.error(error);
+        showStatus("लगइन हुन सकेन: " + error.message, true);
+      }
+    });
+
+    $("logoutBtn").addEventListener("click", () => auth.signOut());
+
+    auth.onAuthStateChanged(user => {
+      currentUser = user;
+      isAdmin = !!(user && user.email === ADMIN_EMAIL && user.emailVerified);
+
+      $("adminPanel").classList.toggle("hidden", !isAdmin);
+      $("loginBtn").classList.toggle("hidden", !!user);
+      $("logoutBtn").classList.toggle("hidden", !user);
+      $("backupBtn").classList.toggle("hidden", !isAdmin);
+
+      if (isAdmin) {
+        $("loginInfo").textContent = "व्यवस्थापकका रूपमा लगइन भएको छ: " + user.email;
+      } else if (user) {
+        $("loginInfo").textContent = "लगइन भएको खाता व्यवस्थापक होइन। वंशावली हेर्न सक्नुहुन्छ, सम्पादन गर्न सक्नुहुन्न।";
+      } else {
+        $("loginInfo").textContent = "वंशावली सबैले हेर्न सक्छन्। सम्पादन व्यवस्थापकले मात्र गर्न सक्छन्।";
+      }
+      renderMembers();
+    });
+
+    membersRef.onSnapshot(snapshot => {
+      members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderMembers();
+    }, error => {
+      console.error(error);
+      showStatus("Firestore बाट विवरण ल्याउन सकिएन। Firebase Rules र इन्टरनेट जाँच्नुहोस्। " + error.message, true);
+      $("familyTree").innerHTML = '<div class="empty">वंशावली लोड गर्न समस्या भयो।</div>';
+    });
+  </script>
+</body>
+</html>
