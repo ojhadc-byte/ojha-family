@@ -360,6 +360,7 @@ function renderDescendants(parentId, path = new Set()) {
       );
 
       const tree = $("familyTree");
+      console.log("कुल सदस्य:", members.length, "सन्तान सम्बन्ध:", members.filter(m => m.fatherId).length);
       if (!filtered.length) {
         tree.innerHTML = '<div class="empty">' +
           (members.length ? "खोजिएको सदस्य भेटिएन।" : "अहिलेसम्म सदस्य थपिएको छैन। व्यवस्थापकले लगइन गरी सदस्य थप्न सक्नुहुन्छ।") +
