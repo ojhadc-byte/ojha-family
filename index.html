@@ -351,6 +351,101 @@ function renderDescendants(parentId, path = new Set()) {
     </li>
   `).join("") + '</ol>';
 }
+    function printFamilyLineage(memberId) {
+  const member = members.find(m => m.id === memberId);
+  if (!member) return;
+
+  const ancestors = [];
+  let current = member;
+  const seen = new Set();
+
+  while (current && current.fatherId) {
+    if (seen.has(current.id)) break;
+    seen.add(current.id);
+
+    const father = members.find(
+      m => m.id === current.fatherId
+    );
+
+    if (!father) break;
+
+    ancestors.unshift(father);
+    current = father;
+  }
+
+  const printWindow = window.open("", "_blank");
+  if (!printWindow) {
+    alert("प्रिन्ट विन्डो खोल्न अनुमति दिनुहोस्।");
+    return;
+  }
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="ne">
+    <head>
+      <meta charset="UTF-8">
+      <title>${escapeHtml(member.name)} - वंशावली</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 25px;
+          color: #222;
+          line-height: 1.8;
+        }
+        h1, h2 { text-align: center; }
+        h2 {
+          border-bottom: 1px solid #999;
+          padding-bottom: 6px;
+          margin-top: 25px;
+        }
+        li { margin: 5px 0; }
+        details { display: block; }
+        details:not([open]) > :not(summary) {
+          display: block !important;
+        }
+        summary { font-weight: bold; }
+        @media print {
+          body { padding: 10px; }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>ओझा परिवार</h1>
+      <h2>${escapeHtml(member.name)} को वंशावली</h2>
+
+      <h2>पुर्खाहरू</h2>
+      <ol>
+        ${ancestors.map(p => `
+          <li>
+            ${escapeHtml(p.name)}
+            — ${nepaliNumber(p.generation)} औँ पुस्ता
+          </li>
+        `).join("")}
+        <li>
+          <strong>
+            ${escapeHtml(member.name)}
+            — ${nepaliNumber(member.generation)} औँ पुस्ता
+          </strong>
+        </li>
+      </ol>
+
+      <h2>सन्तान तथा पछिल्ला पुस्ता</h2>
+      ${renderDescendants(member.id)}
+
+      <hr>
+      <p style="text-align:center;">
+        ओझा परिवार — हाम्रो वंश, हाम्रो पहिचान
+      </p>
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.onload = () => {
+    printWindow.focus();
+    printWindow.print();
+  };
+}
     function updateStats() {
       $("totalMembers").textContent = nepaliNumber(members.length);
       const generations = [...new Set(members.map(m => Number(m.generation)).filter(n => n > 0))];
