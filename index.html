@@ -321,6 +321,36 @@ function renderDescendants(parentId, path = new Set()) {
     </li>
   `).join("") + '</ul>';
 }
+    function renderAncestors(member) {
+  const ancestors = [];
+  let current = member;
+  const seen = new Set();
+
+  while (current && current.fatherId) {
+    if (seen.has(current.id)) break;
+    seen.add(current.id);
+
+    const father = members.find(
+      m => m.id === current.fatherId
+    );
+
+    if (!father) break;
+
+    ancestors.unshift(father);
+    current = father;
+  }
+
+  if (!ancestors.length) {
+    return '<p>यस सदस्यको थप पुर्खा विवरण छैन।</p>';
+  }
+
+  return '<ol>' + ancestors.map(person => `
+    <li>
+      ${escapeHtml(person.name)}
+      — ${nepaliNumber(person.generation)} औँ पुस्ता
+    </li>
+  `).join("") + '</ol>';
+}
     function updateStats() {
       $("totalMembers").textContent = nepaliNumber(members.length);
       const generations = [...new Set(members.map(m => Number(m.generation)).filter(n => n > 0))];
