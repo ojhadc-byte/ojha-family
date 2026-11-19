@@ -383,6 +383,20 @@ function renderDescendants(parentId, path = new Set()) {
               <p><strong>बुबा:</strong> ${escapeHtml(fatherName(m))}</p>
               <p><strong>शाखा / चिनारी:</strong> ${escapeHtml(m.branch || "उल्लेख छैन")}</p>
               ${m.note ? `<p><strong>थप विवरण:</strong> ${escapeHtml(m.note)}</p>` : ""}
+              ${members.some(child => child.fatherId === m.id) ? `
+  <details class="child-details">
+    <summary>
+      सन्तान हेर्नुहोस् (
+      ${nepaliNumber(members.filter(child => child.fatherId === m.id).length)}
+      )
+    </summary>
+    ${renderDescendants(m.id)}
+  </details>
+` : `
+  <p style="font-size:13px;color:#68756e;">
+    सन्तानको विवरण थपिएको छैन।
+  </p>
+`}
               ${isAdmin ? `
                 <div class="actions">
                   <button class="btn light editBtn" data-id="${escapeHtml(m.id)}">सच्याउनुहोस्</button>
