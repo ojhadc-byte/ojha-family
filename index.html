@@ -528,6 +528,12 @@ function renderDescendants(parentId, path = new Set()) {
     सन्तानको विवरण थपिएको छैन।
   </p>
 `}
+<div class="actions">
+  <button class="btn light printLineageBtn"
+    data-id="${escapeHtml(m.id)}">
+    प्रिन्ट / PDF
+  </button>
+</div>
               ${isAdmin ? `
                 <div class="actions">
                   <button class="btn light editBtn" data-id="${escapeHtml(m.id)}">सच्याउनुहोस्</button>
@@ -544,6 +550,11 @@ function renderDescendants(parentId, path = new Set()) {
       tree.querySelectorAll(".deleteBtn").forEach(btn =>
         btn.addEventListener("click", () => deleteMember(btn.dataset.id))
       );
+      tree.querySelectorAll(".printLineageBtn").forEach(btn =>
+  btn.addEventListener("click", () =>
+    printFamilyLineage(btn.dataset.id)
+  )
+);
     }
 
     function resetForm() {
