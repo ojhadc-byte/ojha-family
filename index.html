@@ -415,6 +415,10 @@ function renderDescendants(parentId, path = new Set()) {
               <p><strong>बुबा:</strong> ${escapeHtml(fatherName(m))}</p>
               <p><strong>शाखा / चिनारी:</strong> ${escapeHtml(m.branch || "उल्लेख छैन")}</p>
               ${m.note ? `<p><strong>थप विवरण:</strong> ${escapeHtml(m.note)}</p>` : ""}
+              <details class="ancestor-details">
+  <summary>पुर्खा हेर्नुहोस् ↑</summary>
+  ${renderAncestors(m)}
+</details>
               ${members.some(child => child.fatherId === m.id) ? `
   <details class="child-details">
     <summary>
