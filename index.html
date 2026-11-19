@@ -291,6 +291,35 @@
       return father ? father.name : "बुबाको विवरण भेटिएन";
     }
 
+    // कुनै सदस्यका सन्तान र पछिल्ला पुस्ता देखाउने
+function renderDescendants(parentId, path = new Set()) {
+  if (path.has(parentId)) return "";
+
+  const nextPath = new Set(path);
+  nextPath.add(parentId);
+
+  const children = members
+    .filter(m => m.fatherId === parentId)
+    .sort((a, b) => a.name.localeCompare(b.name, "ne"));
+
+  if (!children.length) {
+    return '<p style="color:#68756e;font-size:13px;">सन्तानको विवरण थपिएको छैन।</p>';
+  }
+
+  return '<ul>' + children.map(child => `
+    <li>
+      <details>
+        <summary>
+          ${escapeHtml(child.name)}
+          — ${nepaliNumber(child.generation)} औँ पुस्ता
+        </summary>
+        ${child.branch ? `<p>शाखा: ${escapeHtml(child.branch)}</p>` : ""}
+        ${child.note ? `<p>${escapeHtml(child.note)}</p>` : ""}
+        ${renderDescendants(child.id, nextPath)}
+      </details>
+    </li>
+  `).join("") + '</ul>';
+}
     function updateStats() {
       $("totalMembers").textContent = nepaliNumber(members.length);
       const generations = [...new Set(members.map(m => Number(m.generation)).filter(n => n > 0))];
