@@ -577,6 +577,7 @@ function renderDescendants(parentId, path = new Set()) {
 
     membersRef.onSnapshot(snapshot => {
       members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      window.members = members;
       renderMembers();
     }, error => {
       console.error(error);
